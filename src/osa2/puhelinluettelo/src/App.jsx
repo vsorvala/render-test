@@ -3,6 +3,8 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +13,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [str, setStr] = useState("")
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [messageType, setMessageType] = useState("notification")
 
   useEffect(() => {
     console.log('effect')
@@ -48,6 +52,12 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setErrorMessage(
+            `Added ${returnedPerson.name}`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 2000)
         })
 
     }
@@ -61,7 +71,25 @@ const App = () => {
             setPersons(persons.map(person => person.id !== personO.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
-          })
+           
+            setErrorMessage(
+              `The number of ${returnedPerson.name} modified, new number ${returnedPerson.number}`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 2000)
+          }).catch(error => {
+            setMessageType("error")
+            setErrorMessage(
+              `Information of ${newName} has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+              setMessageType("notification")
+            }, 2000) 
+             setPersons(persons.filter(p => p.name !== newName))
+             
+          });
 
 
       }
@@ -76,9 +104,15 @@ const App = () => {
         console.log("resp ", response)
         console.log(`Deleted post with ID ${id}`);
         setPersons(persons.filter(person => person.id != id))
+        setErrorMessage(
+          `Deleted ${response.name}`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 2000)
       })
         .catch(error => {
-          alert(`the person with '${id}' not on the server.`, error)
+                   
           setPersons(persons.filter(p => p.id !== id))
         });
 
@@ -99,6 +133,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} type={messageType} />
 
       <Filter str={str} handleStrChange={handleStrChange} />
 
