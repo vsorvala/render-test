@@ -1,0 +1,8 @@
+POST https://render-test-1-sohi.onrender.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "999 i 7",
+    "number": "098747943" ,
+    "le": ""
+}
