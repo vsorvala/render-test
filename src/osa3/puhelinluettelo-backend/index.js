@@ -78,6 +78,7 @@ app.post('/api/persons', (request, response) => {
     const body = request.body
 
     console.log(request.headers)
+    console.log("body", body)
 
     if (!body.name) {
         return response.status(400).json({
