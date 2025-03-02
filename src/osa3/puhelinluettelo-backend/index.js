@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
@@ -12,31 +13,8 @@ app.use(cors())
 
 app.use(express.static('dist'))
 
-let persons = [
-    {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": "4"
-    },
-    {
-        "id": "acfd",
-        "name": "Arto Eljas",
-        "number": "1234567890"
-    },
-    {
-        "id": "e455",
-        "name": "Mary Poppendieck Jr",
-        "number": "0987654321"
-    },
-    {
-        "id": "5e3f",
-        "name": "moi3",
-        "number": "5555"
-    }
-]
-
-
-
+const mongoose = require('mongoose')
+const Person = require('./models/person')
 
 app.get('/', (request, response) => {
     response.send('<h1>This is Phonebook backend</h1>')
@@ -49,7 +27,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(people => {
+        response.json(people)
+      })
 })
 
 app.get('/api/persons/:id', (request, response) => {
